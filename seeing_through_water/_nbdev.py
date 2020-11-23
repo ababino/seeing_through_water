@@ -18,6 +18,7 @@ index = {"video_info": "00_core.ipynb",
          "slideshow": "02_slideshow.ipynb"}
 
 modules = ["core.py",
+           "dataset.py",
            "slideshow.py"]
 
 doc_url = "https://ababino.github.io/seeing_through_water/"
