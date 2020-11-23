@@ -65,10 +65,6 @@ class Panel(wx.Panel):
             else:
                 frame = cv2.imread(frame_name)
             bitmap, pad_h, pad_w = array_to_wx(frame, self.size)
-#             if frame_name!='black':
-#                 time.sleep(self.sleep)
-#             else:
-#                 time.sleep(0.1)
         except StopIteration:
             frame = self.black
             frame = cv2.imread(frame)
