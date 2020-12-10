@@ -67,11 +67,8 @@ class Panel(wx.Panel):
             bitmap, pad_h, pad_w = array_to_wx(frame, self.size)
         except StopIteration:
             frame = self.black
-            frame = cv2.imread(frame)
             frame_name = 'black'
             bitmap, pad_h, pad_w = array_to_wx(frame, self.size)
-            self.Close()
-            self.parent.Close()
         return bitmap, pad_h, pad_w, frame_name
 
     def on_paint(self, event):
@@ -112,7 +109,7 @@ def slideshow(folder:Param("Path to the video", str),
     """Slide Show.
 
     Example:
-        python path_to_folder_with_imgages 1000 1000
+        slideshow path_to_folder_with_imgages 1000 1000
 
     Author: Andres Babino <ababino@gmail.com>
     """
