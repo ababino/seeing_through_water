@@ -27,9 +27,10 @@ def array_to_wx(image, size):
 
 # Cell
 class Panel(wx.Panel):
-    def __init__(self, parent, imgs, size, sleep):
+    def __init__(self, parent, imgs, size, sleep, n_imgs):
         super(Panel, self).__init__(parent, -1)
         self.imgs = imgs
+        self.pbar = tqdm(total=n_imgs)
         self.size = size
         self.sleep = sleep
         self.black = np.zeros([size[0], size[0], 3], dtype=np.uint8)
@@ -64,6 +65,7 @@ class Panel(wx.Panel):
                 frame = self.white
             else:
                 frame = cv2.imread(frame_name)
+                self.pbar.update()
             bitmap, pad_h, pad_w = array_to_wx(frame, self.size)
         except StopIteration:
             frame = self.black
@@ -92,12 +94,12 @@ class Panel(wx.Panel):
 
 # Cell
 class Frame(wx.Frame):
-    def __init__(self, imgs, size, sleep):
+    def __init__(self, imgs, size, sleep, n_imgs):
         d0w, d0h = wx.DisplaySize()
         style = wx.STAY_ON_TOP
         super(Frame, self).__init__(None, -1, 'coco imgs', style=style,
                                     size=(10,10))
-        panel = Panel(self, imgs, size, sleep)
+        panel = Panel(self, imgs, size, sleep, n_imgs)
         self.Fit()
         self.SetPosition((d0w,0))
 
@@ -105,7 +107,7 @@ class Frame(wx.Frame):
 @call_parse
 def slideshow(folder:Param("Path to the video", str),
               size:Param("Size of the window", int, nargs=2),
-              sleep:Param("Presentation time for each frame. 0.1 yields 3 frames per image, 0.3 yoelds 9. (if you are filming at 30fps)", float)=0.1):
+              sleep:Param("Presentation time for each frame. 0.1 yields 3 frames per image, 0.3 yields 9. (if you are filming at 30fps)", float)=0.1):
     """Slide Show.
 
     Example:
@@ -119,10 +121,10 @@ def slideshow(folder:Param("Path to the video", str),
     black_imgs = itertools.repeat('black')
     imgs = zip(black_imgs, path)
     imgs = itertools.chain.from_iterable(imgs)
-    imgs = enumerate(tqdm(imgs, total=len(path)*2, unit='images'))
-
+#     imgs = enumerate(tqdm(imgs, total=len(path)*2+2, unit='images', smoothing=0))
+    imgs = enumerate(imgs)
     logging.debug('Start app')
     app = wx.App()
-    frame = Frame(imgs, size, sleep)
+    frame = Frame(imgs, size, sleep, len(path)-2)
     frame.Show()
     app.MainLoop()
