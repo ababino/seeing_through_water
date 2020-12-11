@@ -109,13 +109,13 @@ def slideshow(folder:Param("Path to the video", str),
     """Slide Show.
 
     Example:
-        slideshow path_to_folder_with_imgages 1000 1000
+        slideshow imgs 1000 1000
 
     Author: Andres Babino <ababino@gmail.com>
     """
     logging.basicConfig(format='%(levelname)s: %(asctime)s %(message)s', filename="stw.log", level=logging.DEBUG)
     path = os.path.join(folder, '*.jpg')
-    path = ['white']+glob(path)+['white']
+    path = ['white']+sorted(glob(path))+['white']
     black_imgs = itertools.repeat('black')
     imgs = zip(black_imgs, path)
     imgs = itertools.chain.from_iterable(imgs)
