@@ -107,7 +107,9 @@ class Frame(wx.Frame):
 @call_parse
 def slideshow(folder:Param("Path to the video", str),
               size:Param("Size of the window", int, nargs=2),
-              sleep:Param("Presentation time for each frame. 0.1 yields 3 frames per image, 0.3 yields 9. (if you are filming at 30fps)", float)=0.1):
+              sleep:Param("Presentation time for each frame. 0.1 yields 3 frames per image, 0.3 yields 9. (if you are filming at 30fps)", float)=0.1,
+              first:Param("First image to show. Default 0", type=int)=0,
+              last:Param("Last image to show. Default -1, equivalent to last", type=int)=-1):
     """Slide Show.
 
     Example:
@@ -117,11 +119,11 @@ def slideshow(folder:Param("Path to the video", str),
     """
     logging.basicConfig(format='%(levelname)s: %(asctime)s %(message)s', filename="stw.log", level=logging.DEBUG)
     path = os.path.join(folder, '*.jpg')
-    path = ['white']+sorted(glob(path))+['white']
+    if last==-1: last=len(path)
+    path = ['white']+sorted(glob(path))[first:last]+['white']
     black_imgs = itertools.repeat('black')
     imgs = zip(black_imgs, path)
     imgs = itertools.chain.from_iterable(imgs)
-#     imgs = enumerate(tqdm(imgs, total=len(path)*2+2, unit='images', smoothing=0))
     imgs = enumerate(imgs)
     logging.debug('Start app')
     app = wx.App()
